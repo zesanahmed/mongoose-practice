@@ -1,13 +1,35 @@
 import { Schema, model, connect } from 'mongoose';
-import { Student } from './student/student.interface';
+import {
+  Guardian,
+  LocalGuardian,
+  Student,
+  UserName,
+} from './student/student.interface';
+
+const userNameSchema = new Schema<UserName>({
+  firstName: { type: String, required: true },
+  middleName: { type: String },
+  lastName: { type: String, required: true },
+});
+
+const guardianSchema = new Schema<Guardian>({
+  fatherName: { type: String },
+  fatherOccupation: { type: String },
+  fatherContactNo: { type: String },
+  motherName: { type: String },
+  motherOccupation: { type: String },
+});
+
+const localGuardianSchema = new Schema<LocalGuardian>({
+  name: { type: String },
+  occupation: { type: String },
+  contactNo: { type: String },
+  relation: { type: String },
+});
 
 const studentSchema = new Schema<Student>({
   id: { type: String, required: true },
-  name: {
-    firstName: { type: String, required: true },
-    middleName: { type: String },
-    lastName: { type: String, required: true },
-  },
+  name: userNameSchema,
   gender: { type: String, enum: ['male', 'female'] },
   dateOfBirth: { type: String, required: true },
   contactNo: { type: String, required: true },
@@ -20,19 +42,10 @@ const studentSchema = new Schema<Student>({
   avatar: { type: String },
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  guardian: {
-    fatherName: { type: String },
-    fatherOccupation: { type: String },
-    fatherContactNo: { type: String },
-    motherName: { type: String },
-    motherOccupation: { type: String },
-  },
-  localGuardian: {
-    name: { type: String },
-    occupation: { type: String },
-    contactNo: { type: String },
-    relation: { type: String },
-  },
+  guardian: guardianSchema,
+  localGuardian: localGuardianSchema,
   profileImage: { type: String },
   isActive: { type: Boolean },
 });
+
+export const StudentModel = model<Student>('Student', studentSchema);
