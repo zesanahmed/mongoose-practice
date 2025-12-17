@@ -72,7 +72,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
+const studentSchema = new Schema<TStudent, StudentModel>({
   id: {
     type: String,
     required: [true, 'Student ID is required'],
@@ -149,12 +149,18 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
     default: true,
   },
 });
-
-studentSchema.methods.isStudentExist = async function (
-  id: string,
-): Promise<TStudent | null> {
-  const student = await Student.findOne({ id });
-  return student;
+//creating a custom static method
+studentSchema.statics.isStudentExists = async function (id: string) {
+  const existingStudent = await Student.findOne({ id });
+  return existingStudent;
 };
+
+// creating a custom instance method
+// studentSchema.methods.isStudentExist = async function (
+//   id: string,
+// ): Promise<TStudent | null> {
+//   const student = await Student.findOne({ id });
+//   return student;
+// };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
